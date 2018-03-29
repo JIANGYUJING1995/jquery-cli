@@ -46,7 +46,7 @@ gulp.task('default', ['build']);
 
 // 打包-生产环境gulp任务
 gulp.task('build', ['clean'], function() {
-    runSequence('less','html','commonjs','browserifyjs');
+    runSequence('less','html','commonjs','browserifyjs','images');
 });
 
 // 
@@ -83,9 +83,13 @@ gulp.task('browserifyjs', function (done) {
                     }
                 })
                 .transform(babelify) 
+                
                 .bundle()  //合并打包
                 .pipe(source(setbaseName(basename)))  //将常规流转换为包含Stream的vinyl对象，并且重命名
                 .pipe(buffer())  //将vinyl对象内容中的Stream转换为Buffer
+                .pipe(uglify({
+                    compress: true
+                }))
                 .pipe(gulp.dest(dirname))
             })
             
